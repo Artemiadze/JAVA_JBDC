@@ -1,0 +1,60 @@
+-- 1. Создание базы данных
+CREATE OR REPLACE FUNCTION create_database(db_name TEXT) RETURNS VOID AS $$
+BEGIN
+    EXECUTE format('CREATE DATABASE %I', db_name);
+END;
+$$ LANGUAGE plpgsql;
+
+-- 2. Удаление базы данных
+CREATE OR REPLACE FUNCTION drop_database(db_name TEXT) RETURNS VOID AS $$
+BEGIN
+    EXECUTE format('DROP DATABASE %I', db_name);
+END;
+$$ LANGUAGE plpgsql;
+
+-- 3. Очистка таблицы Course
+CREATE OR REPLACE FUNCTION truncate_student() RETURNS VOID AS $$
+BEGIN
+    TRUNCATE TABLE student RESTART IDENTITY CASCADE;
+END;
+$$ LANGUAGE plpgsql;
+
+
+DROP FUNCTION insert_student(character varying,character varying,character varying);
+-- 4. Добавление студента
+CREATE OR REPLACE FUNCTION insert_student(insert_name VARCHAR, insert_email VARCHAR, insert_group VARCHAR) 
+RETURNS VOID AS $$
+BEGIN
+    INSERT INTO student (name, email, group_name) VALUES (insert_name, insert_email, insert_group);
+END;
+$$ LANGUAGE plpgsql;
+
+DROP FUNCTION search_student_by_name(character varying);
+-- 5. Получение списка студентов по имени
+CREATE OR REPLACE FUNCTION search_student_by_name(search_name VARCHAR)
+RETURNS TABLE(id INT, name VARCHAR, email VARCHAR, group_name VARCHAR) AS $$
+BEGIN
+    RETURN QUERY 
+    SELECT student.id, student.name, student.email, student.group_name
+    FROM student
+    WHERE student.name ILIKE '%' || search_name || '%';
+END;
+$$ LANGUAGE plpgsql;
+
+DROP FUNCTION update_student(integer,character varying,character varying,character varying);
+-- 6. Обновление данных студента
+CREATE OR REPLACE FUNCTION update_student(update_id INT, update_name VARCHAR, update_email VARCHAR, update_group VARCHAR) 
+RETURNS VOID AS $$
+BEGIN
+    UPDATE student SET name = update_name, email = update_email, group_name = update_group WHERE id = update_id;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP FUNCTION delete_student_by_email(character varying);
+-- 7. Удаление студента по email
+CREATE OR REPLACE FUNCTION delete_student_by_email(delete_email VARCHAR) 
+RETURNS VOID AS $$
+BEGIN
+    DELETE FROM student WHERE student.email = delete_email;
+END;
+$$ LANGUAGE plpgsql;

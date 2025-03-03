@@ -2,6 +2,7 @@ package org.example;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Objects;
 
 public class StudentGUI extends JFrame {
     private final JTextField nameField;
@@ -80,6 +81,10 @@ public class StudentGUI extends JFrame {
         String name = searchField.getText();
         String result = dbManager.searchStudentByName(name);
         outputArea.setText(result);
+        if (Objects.equals(result, "")){
+            //Нет пользователя с таким именем
+            outputArea.setText("Nothing");
+        }
     }
 
     private void updateStudent() {

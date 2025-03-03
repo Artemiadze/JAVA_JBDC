@@ -54,7 +54,7 @@ public class StudentGUI extends JFrame {
         add(emailField);
         add(new JLabel("Группа:"));
         add(groupField);
-        add(new JLabel("Поиск/Удаление (Имя):"));
+        add(new JLabel("Поиск/Удаление (Имя/Почта):"));
         add(searchField);
         add(addButton);
         add(searchButton);

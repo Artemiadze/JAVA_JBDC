@@ -46,8 +46,23 @@ public class StudentManager {
     }
 
     public void dropDatabase(String dbName) {
-        executeUpdate("SELECT drop_database(?)", dbName);
+        String url = "jdbc:postgresql://localhost:5432/postgres"; // Подключаемся к default-базе
+
+        try (Connection conn = DriverManager.getConnection(url, USER, PASSWORD);
+             Statement stmt = conn.createStatement()) {
+
+            // Завершаем все активные подключения к базе перед удалением
+            stmt.execute("SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '" + dbName + "'");
+
+            // Удаляем базу данных
+            stmt.executeUpdate("DROP DATABASE IF EXISTS " + dbName);
+            System.out.println("База данных " + dbName + " удалена.");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
+
 
     private Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL, USER, PASSWORD);

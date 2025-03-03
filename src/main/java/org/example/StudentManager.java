@@ -20,7 +20,7 @@ public class StudentManager {
                 result.append("ID: ").append(rs.getInt("id"))
                         .append(", Имя: ").append(rs.getString("name"))
                         .append(", Email: ").append(rs.getString("email"))
-                        .append(", Группа: ").append(rs.getString("group"))
+                        .append(", Группа: ").append(rs.getString("group_name"))
                         .append("\n");
             }
         } catch (SQLException e) {

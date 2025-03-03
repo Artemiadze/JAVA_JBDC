@@ -4,15 +4,18 @@ import javax.swing.*;
 import java.awt.*;
 
 public class StudentGUI extends JFrame {
-    private JTextField nameField, emailField, groupField, searchField;
-    private JTextArea outputArea;
-    private StudentManager dbManager;
+    private final JTextField nameField;
+    private final JTextField emailField;
+    private final JTextField groupField;
+    private final JTextField searchField;
+    private final JTextArea outputArea;
+    private final StudentManager dbManager;
 
     public StudentGUI() {
-        setTitle("Управление студентами");
-        setSize(500, 400);
+        setTitle("Управление");
+        setSize(700, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new GridLayout(6, 2));
+        setLayout(new GridLayout(8, 2));
 
         dbManager = new StudentManager();
 
@@ -36,8 +39,8 @@ public class StudentGUI extends JFrame {
         updateButton.addActionListener(e -> updateStudent());
         deleteButton.addActionListener(e -> deleteStudent());
         clearTableButton.addActionListener(e -> dbManager.truncateStudentTable());
-        createDBButton.addActionListener(e -> dbManager.createDatabase("lms_db"));
-        dropDBButton.addActionListener(e -> dbManager.dropDatabase("lms_db"));
+        createDBButton.addActionListener(e -> dbManager.createDatabase("student"));
+        dropDBButton.addActionListener(e -> dbManager.dropDatabase("student"));
 
         add(new JLabel("Имя:"));
         add(nameField);

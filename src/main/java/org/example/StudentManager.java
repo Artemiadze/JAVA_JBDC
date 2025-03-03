@@ -1,10 +1,61 @@
 package org.example;
 import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 
 public class StudentManager {
-    private static final String URL = "jdbc:postgresql://localhost:5432/postgres";
+    private static final String URL = "jdbc:postgresql://localhost:5432/";
     private static final String USER = "postgres";
     private static final String PASSWORD = "postgre";
+
+    // Создание БД
+    public void createDatabase() {
+        System.out.println("Registering JDBC driver...");
+
+        System.out.println("Connecting to DB...");
+
+        System.out.println("Creating database...");
+
+        String SQL = "CREATE DATABASE students";
+        executeUpdate(SQL);
+        System.out.println("Database successfully created...");
+
+        createStudentTable();
+    }
+
+    // Создание таблицы student после создания БД
+    private void createStudentTable() {
+        String newDbURL = "jdbc:postgresql://localhost:5432/";
+
+        String createTableSQL = "CREATE TABLE students (" +
+                "id SERIAL PRIMARY KEY, " +
+                "name VARCHAR(100) NOT NULL, " +
+                "email VARCHAR(100) UNIQUE NOT NULL, " +
+                "group_name VARCHAR(50) NOT NULL" +
+                ");";
+
+
+        try (Connection conn = DriverManager.getConnection(newDbURL, USER, PASSWORD);
+             Statement stmt = conn.createStatement()) {
+
+            stmt.executeUpdate(createTableSQL);
+            System.out.println("Таблица students успешно создана в БД " + "student");
+
+        } catch (SQLException e) {
+            System.err.println("Ошибка при создании таблицы student: " + e.getMessage());
+        }
+    }
+
+    // Удаление БД
+    public void dropDatabase() {
+        String SQL = "DROP DATABASE students";
+        executeUpdate(SQL);
+
+        System.out.println("Database successfully created...");
+    }
 
     public void addStudent(String name, String email, String group) {
         executeUpdate("{ call insert_student(?, ?, ?) }", name, email, group);
@@ -40,29 +91,6 @@ public class StudentManager {
     public void truncateStudentTable() {
         executeUpdate("{ call truncate_student() }");
     }
-
-    public void createDatabase(String dbName) {
-        executeUpdate("SELECT create_database(?)", dbName);
-    }
-
-    public void dropDatabase(String dbName) {
-        String url = "jdbc:postgresql://localhost:5432/postgres"; // Подключаемся к default-базе
-
-        try (Connection conn = DriverManager.getConnection(url, USER, PASSWORD);
-             Statement stmt = conn.createStatement()) {
-
-            // Завершаем все активные подключения к базе перед удалением
-            stmt.execute("SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '" + dbName + "'");
-
-            // Удаляем базу данных
-            stmt.executeUpdate("DROP DATABASE IF EXISTS " + dbName);
-            System.out.println("База данных " + dbName + " удалена.");
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
 
     private Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL, USER, PASSWORD);

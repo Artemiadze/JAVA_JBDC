@@ -1,17 +1,3 @@
--- 1. Создание базы данных
-CREATE OR REPLACE FUNCTION create_database(db_name TEXT) RETURNS VOID AS $$
-BEGIN
-    EXECUTE format('CREATE DATABASE %I', db_name);
-END;
-$$ LANGUAGE plpgsql;
-
--- 2. Удаление базы данных
-CREATE OR REPLACE FUNCTION drop_database(db_name TEXT) RETURNS VOID AS $$
-BEGIN
-    EXECUTE format('DROP DATABASE %I', db_name);
-END;
-$$ LANGUAGE plpgsql;
-
 -- 3. Очистка таблицы Course
 CREATE OR REPLACE FUNCTION truncate_student() RETURNS VOID AS $$
 BEGIN

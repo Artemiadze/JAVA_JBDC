@@ -39,8 +39,8 @@ public class StudentGUI extends JFrame {
         updateButton.addActionListener(e -> updateStudent());
         deleteButton.addActionListener(e -> deleteStudent());
         clearTableButton.addActionListener(e -> dbManager.truncateStudentTable());
-        createDBButton.addActionListener(e -> dbManager.createDatabase("student"));
-        dropDBButton.addActionListener(e -> dbManager.dropDatabase("student"));
+        createDBButton.addActionListener(e -> dbManager.createDatabase());
+        dropDBButton.addActionListener(e -> dbManager.dropDatabase());
 
         add(new JLabel("Имя:"));
         add(nameField);

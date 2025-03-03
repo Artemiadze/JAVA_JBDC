@@ -1,9 +1,5 @@
 package org.example;
 import java.sql.*;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
 
 
 public class StudentManager {
@@ -39,7 +35,7 @@ public class StudentManager {
                 ");";
 
 
-        try (Connection conn = DriverManager.getConnection(newDbURL, USER, PASSWORD);
+        try (Connection conn = getConnection(newDbURL);
              Statement stmt = conn.createStatement()) {
 
             stmt.executeUpdate(createTableSQL);
@@ -105,7 +101,7 @@ public class StudentManager {
                 "$$ LANGUAGE plpgsql;";
 
 
-        try (Connection conn = DriverManager.getConnection(newURL, USER, PASSWORD);
+        try (Connection conn = getConnection(newURL);
              Statement stmt = conn.createStatement()) {
 
             stmt.executeUpdate(TruncateSQL);
@@ -126,7 +122,7 @@ public class StudentManager {
         String newURL = "jdbc:postgresql://localhost:5432/student";
 
         String callFunctionSQL = "SELECT insert_student(?, ?, ?);";
-        try (Connection conn = DriverManager.getConnection(newURL, USER, PASSWORD)) {
+        try (Connection conn = getConnection(newURL)) {
             // Вызов функции для вставки данных
             try (PreparedStatement pstmt = conn.prepareStatement(callFunctionSQL)) {
                 pstmt.setString(1, name);
@@ -149,7 +145,7 @@ public class StudentManager {
         String callFunctionSQL = "SELECT * FROM search_student_by_name(?);";
 
         StringBuilder result = new StringBuilder();
-        try (Connection conn = DriverManager.getConnection(newURL, USER, PASSWORD)) {
+        try (Connection conn = getConnection(newURL)) {
             // Вызов функции для обновления данных
             try (PreparedStatement pstmt = conn.prepareStatement(callFunctionSQL)) {
                 pstmt.setString(1, name);
@@ -176,7 +172,7 @@ public class StudentManager {
         String newURL = "jdbc:postgresql://localhost:5432/student";
 
         String callFunctionSQL = "SELECT update_student(?, ?, ?);";
-        try (Connection conn = DriverManager.getConnection(newURL, USER, PASSWORD)) {
+        try (Connection conn = getConnection(newURL)) {
             // Вызов функции для обновления данных
             try (PreparedStatement pstmt = conn.prepareStatement(callFunctionSQL)) {
                 pstmt.setString(1, name);
@@ -197,7 +193,7 @@ public class StudentManager {
         String newURL = "jdbc:postgresql://localhost:5432/student";
 
         String callFunctionSQL = "SELECT delete_student_by_email(?);";
-        try (Connection conn = DriverManager.getConnection(newURL, USER, PASSWORD)) {
+        try (Connection conn = getConnection(newURL)) {
             // Вызов функции для вставки данных
             try (PreparedStatement pstmt = conn.prepareStatement(callFunctionSQL)) {
                 pstmt.setString(1, name);
@@ -216,7 +212,7 @@ public class StudentManager {
         String newURL = "jdbc:postgresql://localhost:5432/student";
 
         String callFunctionSQL = "SELECT truncate_student();";
-        try (Connection conn = DriverManager.getConnection(newURL, USER, PASSWORD)) {
+        try (Connection conn = getConnection(newURL)) {
             // Вызов функции для вставки данных
             try (PreparedStatement pstmt = conn.prepareStatement(callFunctionSQL)) {
                 pstmt.execute();
@@ -228,12 +224,12 @@ public class StudentManager {
         }
     }
 
-    private Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL, USER, PASSWORD);
+    private Connection getConnection(String url) throws SQLException {
+        return DriverManager.getConnection(url, USER, PASSWORD);
     }
 
     private void executeUpdate(String query, String... params) {
-        try (Connection conn = getConnection();
+        try (Connection conn = getConnection(URL);
              CallableStatement stmt = conn.prepareCall(query)) {
             for (int i = 0; i < params.length; i++) {
                 stmt.setString(i + 1, params[i]);

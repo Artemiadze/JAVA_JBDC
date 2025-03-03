@@ -114,6 +114,14 @@ public class StudentManager  {
     public static void main(String[] args) {
         StudentManager sm = new StudentManager();
 
+        // Создание и удаление БД
+        sm.createDatabase("student");
+        sm.insertStudent("Иван Иванов", "ivan@example.com", "Группа A");
+        sm.searchStudentByName("Иван");
+        sm.updateStudent(1, "Иван Петров", "ivanpetrov@example.com", "Группа B");
+        sm.deleteStudentByEmail("ivanpetrov@example.com");
+        sm.dropDatabase("student");
+
         sm.truncateStudent();
     }
 }

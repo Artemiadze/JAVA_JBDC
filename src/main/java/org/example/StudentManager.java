@@ -162,7 +162,7 @@ public class StudentManager {
                             .append(", Группа: ").append(rs.getString("group_name"))
                             .append("\n");
                 }
-                System.out.println("Student was search successfully.");
+                System.out.println("Student was found successfully.");
             }
 
         } catch (SQLException e) {
@@ -184,7 +184,7 @@ public class StudentManager {
                 pstmt.setString(3, group);
 
                 pstmt.execute();
-                System.out.println("Student update successfully.");
+                System.out.println("Student was updated successfully.");
             }
 
         } catch (SQLException e) {
@@ -203,7 +203,7 @@ public class StudentManager {
                 pstmt.setString(1, name);
 
                 pstmt.execute();
-                System.out.println("Student update successfully.");
+                System.out.println("Student was deleted successfully.");
             }
 
         } catch (SQLException e) {
@@ -211,8 +211,21 @@ public class StudentManager {
         }
     }
 
+    // Очистка таблицы
     public void truncateStudentTable() {
-        executeUpdate("{ call truncate_student() }");
+        String newURL = "jdbc:postgresql://localhost:5432/student";
+
+        String callFunctionSQL = "SELECT truncate_student();";
+        try (Connection conn = DriverManager.getConnection(newURL, USER, PASSWORD)) {
+            // Вызов функции для вставки данных
+            try (PreparedStatement pstmt = conn.prepareStatement(callFunctionSQL)) {
+                pstmt.execute();
+                System.out.println("Table was cleaned successfully.");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private Connection getConnection() throws SQLException {

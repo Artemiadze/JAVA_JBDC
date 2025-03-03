@@ -86,7 +86,7 @@ public class StudentGUI extends JFrame {
 
     private void deleteStudent() {
         String name = searchField.getText();
-        dbManager.deleteStudentByName(name);
+        dbManager.deleteStudentByEmail(name);
         outputArea.setText("Студент удалён: " + name);
     }
 

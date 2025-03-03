@@ -97,12 +97,12 @@ public class StudentManager {
                 "$$ LANGUAGE plpgsql;";
 
         // Удаление студента по email
-        String DeleteSQL = "CREATE OR REPLACE FUNCTION delete_student_by_email(delete_email VARCHAR) \n" +
-                "RETURNS VOID AS $$\n" +
-                "BEGIN\n" +
-                "    DELETE FROM students WHERE students.email = delete_email;\n" +
-                "END;\n" +
-                "$$ LANGUAGE plpgsql;\n";
+        String DeleteSQL = "CREATE OR REPLACE FUNCTION delete_student_by_email(delete_email VARCHAR)" +
+                "RETURNS VOID AS $$" +
+                "BEGIN" +
+                "    DELETE FROM students WHERE students.email = delete_email;" +
+                "END;" +
+                "$$ LANGUAGE plpgsql;";
 
 
         try (Connection conn = DriverManager.getConnection(newURL, USER, PASSWORD);
@@ -121,21 +121,7 @@ public class StudentManager {
         }
     }
 
-    /*public void addStudent(String name, String email, String group) {
-        String newURL = "jdbc:postgresql://localhost:5432/student";
-
-
-        try (Connection conn = DriverManager.getConnection(newURL, USER, PASSWORD);
-             Statement stmt = conn.createStatement()) {
-            executeUpdate("{ call insert_student(?, ?, ?) }", name, email, group);
-
-            System.out.println("Operation успешно one " + "student");
-
-        } catch (SQLException e) {
-            System.err.println("Ошибка при добавлений процедур в student: " + e.getMessage());
-        }
-    }*/
-
+    // Добавление данных о студенте в таблицу
     public void addStudent(String name, String email, String group) {
         String newURL = "jdbc:postgresql://localhost:5432/student";
 
@@ -176,12 +162,44 @@ public class StudentManager {
         return result.toString();
     }
 
+    // Обновление данных о студенте
     public void updateStudent(String name, String email, String group) {
-        executeUpdate("{ call update_student(?, ?, ?) }", name, email, group);
+        String newURL = "jdbc:postgresql://localhost:5432/student";
+
+        String callFunctionSQL = "SELECT update_student(?, ?, ?);";
+        try (Connection conn = DriverManager.getConnection(newURL, USER, PASSWORD)) {
+            // Вызов функции для вставки данных
+            try (PreparedStatement pstmt = conn.prepareStatement(callFunctionSQL)) {
+                pstmt.setString(1, name);
+                pstmt.setString(2, email);
+                pstmt.setString(3, group);
+
+                pstmt.execute();
+                System.out.println("Student update successfully.");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void deleteStudentByName(String name) {
-        executeUpdate("{ call delete_student_by_name(?) }", name);
+    // Удаление данных о студенте по почте
+    public void deleteStudentByEmail(String name) {
+        String newURL = "jdbc:postgresql://localhost:5432/student";
+
+        String callFunctionSQL = "SELECT delete_student_by_email(?);";
+        try (Connection conn = DriverManager.getConnection(newURL, USER, PASSWORD)) {
+            // Вызов функции для вставки данных
+            try (PreparedStatement pstmt = conn.prepareStatement(callFunctionSQL)) {
+                pstmt.setString(1, name);
+
+                pstmt.execute();
+                System.out.println("Student update successfully.");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void truncateStudentTable() {

@@ -143,19 +143,28 @@ public class StudentManager {
 
     }
 
+    // Поиск студента по имени
     public String searchStudentByName(String name) {
+        String newURL = "jdbc:postgresql://localhost:5432/student";
+        String callFunctionSQL = "SELECT * FROM search_student_by_name(?);";
+
         StringBuilder result = new StringBuilder();
-        try (Connection conn = getConnection();
-             CallableStatement stmt = conn.prepareCall("{ call search_student_by_name(?) }")) {
-            stmt.setString(1, name);
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                result.append("ID: ").append(rs.getInt("id"))
-                        .append(", Имя: ").append(rs.getString("name"))
-                        .append(", Email: ").append(rs.getString("email"))
-                        .append(", Группа: ").append(rs.getString("group_name"))
-                        .append("\n");
+        try (Connection conn = DriverManager.getConnection(newURL, USER, PASSWORD)) {
+            // Вызов функции для обновления данных
+            try (PreparedStatement pstmt = conn.prepareStatement(callFunctionSQL)) {
+                pstmt.setString(1, name);
+                ResultSet rs = pstmt.executeQuery();
+
+                while (rs.next()) {
+                    result.append("ID: ").append(rs.getInt("id"))
+                            .append(", Имя: ").append(rs.getString("name"))
+                            .append(", Email: ").append(rs.getString("email"))
+                            .append(", Группа: ").append(rs.getString("group_name"))
+                            .append("\n");
+                }
+                System.out.println("Student was search successfully.");
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -168,7 +177,7 @@ public class StudentManager {
 
         String callFunctionSQL = "SELECT update_student(?, ?, ?);";
         try (Connection conn = DriverManager.getConnection(newURL, USER, PASSWORD)) {
-            // Вызов функции для вставки данных
+            // Вызов функции для обновления данных
             try (PreparedStatement pstmt = conn.prepareStatement(callFunctionSQL)) {
                 pstmt.setString(1, name);
                 pstmt.setString(2, email);

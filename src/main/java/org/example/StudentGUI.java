@@ -12,6 +12,7 @@ public class StudentGUI extends JFrame {
     private final StudentManager dbManager;
 
     public StudentGUI() {
+        // Устанавливаем параметры окна
         setTitle("Управление");
         setSize(700, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -19,6 +20,7 @@ public class StudentGUI extends JFrame {
 
         dbManager = new StudentManager();
 
+        // Создание элементов интерфейса
         nameField = new JTextField();
         emailField = new JTextField();
         groupField = new JTextField();
@@ -26,6 +28,7 @@ public class StudentGUI extends JFrame {
         outputArea = new JTextArea(5, 20);
         outputArea.setEditable(false);
 
+        // Кнопки управления
         JButton addButton = new JButton("Добавить");
         JButton searchButton = new JButton("Найти");
         JButton updateButton = new JButton("Обновить");
@@ -34,6 +37,7 @@ public class StudentGUI extends JFrame {
         JButton createDBButton = new JButton("Создать БД");
         JButton dropDBButton = new JButton("Удалить БД");
 
+        // Добавление обработчиков кнопок
         addButton.addActionListener(e -> addStudent());
         searchButton.addActionListener(e -> searchStudent());
         updateButton.addActionListener(e -> updateStudent());
@@ -42,6 +46,7 @@ public class StudentGUI extends JFrame {
         createDBButton.addActionListener(e -> dbManager.createDatabase());
         dropDBButton.addActionListener(e -> dbManager.dropDatabase());
 
+        // Добавляем элементы в окно
         add(new JLabel("Имя:"));
         add(nameField);
         add(new JLabel("Email:"));
@@ -62,6 +67,7 @@ public class StudentGUI extends JFrame {
         setVisible(true);
     }
 
+    // Методы обработки событий
     private void addStudent() {
         String name = nameField.getText();
         String email = emailField.getText();
@@ -90,6 +96,7 @@ public class StudentGUI extends JFrame {
         outputArea.setText("Студент удалён: " + name);
     }
 
+    // запуск GUI
     public static void main(String[] args) {
         SwingUtilities.invokeLater(StudentGUI::new);
     }
